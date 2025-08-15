@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spaceman Crash Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #0d0d2b;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #00ffd5;
+    }
+
+    .multiplier {
+      font-size: 60px;
+      margin: 20px 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #cashOut {
+      background: #00c853;
+      color: white;
+      border: none;
+    }
+
+    #startGame {
+      background: #2962ff;
+      color: white;
+      border: none;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Spaceman Crash Game 🚀</h1>
+
+  <div class="multiplier" id="multiplier">1.00x</div>
+
+  <button id="startGame">Start</button>
+  <button id="cashOut" disabled>Cash Out</button>
+
+  <div id="status"></div>
+
+  <script>
+    let multiplier = 1.00;
+    let crashPoint = 0;
+    let interval = null;
+    let gameActive = false;
+
+    const multiplierDisplay = document.getElementById("multiplier");
+    const cashOutBtn = document.getElementById("cashOut");
+    const startGameBtn = document.getElementById("startGame");
+    const statusDisplay = document.getElementById("status");
+
+    function startGame() {
+      multiplier = 1.00;
+      crashPoint = (Math.random() * 10 + 1).toFixed(2); // Random crash between 1.00x to 11.00x
+      multiplierDisplay.textContent = `${multiplier.toFixed(2)}x`;
+      gameActive = true;
+      cashOutBtn.disabled = false;
+      statusDisplay.textContent = "";
+      console.log("Crash Point:", crashPoint);
+
+      interval = setInterval(() => {
+        multiplier += 0.05 + Math.random() * 0.2;
+        multiplier = parseFloat(multiplier.toFixed(2));
+        multiplierDisplay.textContent = `${multiplier}x`;
+
+        if (multiplier >= crashPoint) {
+          endGame(false);
+        }
+      }, 100);
+    }
+
+    function endGame(cashedOut) {
+      clearInterval(interval);
+      gameActive = false;
+      cashOutBtn.disabled = true;
+      if (cashedOut) {
+        statusDisplay.textContent = `✅ You cashed out at ${multiplier.toFixed(2)}x!`;
+      } else {
+        statusDisplay.textContent = `💥 Crashed at ${multiplier.toFixed(2)}x. You lost!`;
+      }
+    }
+
+    cashOutBtn.addEventListener("click", () => {
+      if (gameActive) {
+        endGame(true);
+      }
+    });
+
+    startGameBtn.addEventListener("click", startGame);
+  </script>
+
+</body>
+</html>
